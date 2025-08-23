@@ -11,7 +11,7 @@ var options = new JsonSerializerOptions
 };
 Console.WriteLine($"{person.Name} {person.LastName} {person.Age} {person.Address} {person.Email} {person.DateOfBirth}");
 string personJSON = JsonSerializer.Serialize(person, typeof (Person), options);
-StreamWriter file = File.CreateText("C:\\Users\\Student\\source\\repos\\Sergey\\Cifra\\ConsoleApp13\\bin\\Debug\\net9.0\\json.json");
+StreamWriter file = File.CreateText("C:\\Users\\Student\\source\\repos\\Sergey\\Cifra\\ConsoleApp13\\bin\\Debug\\net9.0\\");
 file.WriteLine(personJSON);
 file.Close();
 
