@@ -7,11 +7,13 @@ Person person = new Person("Паша", "Котов", 22,"ул. Пушкина, �
 var options = new JsonSerializerOptions
 {
     Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-    WriteIndented = true // Для читаемости, необязательно
+    WriteIndented = true, // Для читаемости, необязательно
+    IncludeFields = true
 };
+
 Console.WriteLine($"{person.Name} {person.LastName} {person.Age} {person.Address} {person.Email} {person.DateOfBirth}");
 string personJSON = JsonSerializer.Serialize(person, typeof (Person), options);
-StreamWriter file = File.CreateText("C:\\Users\\Student\\source\\repos\\Sergey\\Cifra\\ConsoleApp13\\bin\\Debug\\net9.0\\");
+StreamWriter file = File.CreateText("C:\\Users\\Student\\source\\repos\\Sergey\\Cifra\\ConsoleApp13\\Wuw.json");
 file.WriteLine(personJSON);
 file.Close();
 
