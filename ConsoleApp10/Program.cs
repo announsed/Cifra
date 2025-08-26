@@ -1,4 +1,8 @@
-﻿internal static class Program
+﻿using System.Text.Encodings.Web;
+using System.Text.Json;
+using Options = JsonOptions.JsonOptions;
+
+internal static class Program
 {
     public static List<User> users = new List<User>();
     private static void Main(string[] args)
@@ -90,6 +94,16 @@
                 break;
 
             case "4" or "4)":
+                string[] failInArray = UserFileAndProgram.GetData();
+                string[] hashEncode = new string[failInArray.Length];
+                for (int i = 0; i < failInArray.Length; i++)
+                {
+                    hashEncode[i] = UserFileAndProgram.Encryption(failInArray[i]);
+                }
+                string jsonEncode = JsonSerializer.Serialize(hashEncode, Options.options);
+                File.WriteAllLines("jsonEncode.json", new string[] { jsonEncode });
+                break;
+            case "5" or "5)":
                 isStart = false;
                 break;
 
@@ -124,7 +138,21 @@
 
 internal static class UserFileAndProgram
 {
-
+    internal static string Encryption(string dataString) 
+    {
+        string alp = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!,.";
+        string encoded = "";
+        Random random = new Random();
+        int step = random.Next(1, dataString.Length); //ключ-смещение
+        int index = 0;//переменная для получения соответствующего индекса из алфавита
+        for (int i = 0; i < dataString.Length; i++)
+        {
+            index = alp.IndexOf(dataString.Substring(i, 0), i) + step;//индекс символа+ключ-смещение
+            if (index > alp.Length) index -= alp.Length; // если больше длины алфавита вычитаем размер алфавита 
+            encoded += alp.Substring(index, 1);// получение новой строки 
+        }
+        return encoded;
+    }
     internal static void SaveData(string saveString)
     {
         string[] arr = GetData();
@@ -157,7 +185,8 @@ internal static class UserFileAndProgram
         {  " 1) Добавить пользователя",
            " 2) Посмотреть список пользователей",
            " 3) Удалить пользователя",
-           " 4) Выход из программы"
+           " 4) Зашифровать и выгрузить в JSON",
+           " 5) Выход из программы"
         };
 
         foreach (var item in menu)
