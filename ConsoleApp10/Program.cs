@@ -1,5 +1,4 @@
-﻿
-internal static class Program
+﻿internal static class Program
 {
     public static List<User> users = new List<User>();
     private static void Main(string[] args)
@@ -13,9 +12,6 @@ internal static class Program
             isStart = Action(isStart);
         }
     }
-
-
-
 
 
 
@@ -41,12 +37,12 @@ internal static class Program
                     {
                         Console.WriteLine($" Пользователь с логином {userInputLogin} уже существует в системе");
                         hasLogin = true;
+                        break;
                     }
                 }
                 if (!hasLogin)
                 {
-                    User newUser = new User(userInputName, userInputLogin, userInputPassword);
-                    users.Add(newUser);
+                    new User(userInputName, userInputLogin, userInputPassword);
                 }
 
                 break;
@@ -66,14 +62,26 @@ internal static class Program
             case "3" or "3)":
                 Console.Write("\n Введи Id пользователя для удаления: ");
                 int userInputId = Convert.ToInt32(Console.ReadLine());
+                bool isIdUser = false;
                 for (int i = 0; i < users.Count; i++)
                 {
                     if (users[i].Id == userInputId)
                     {
                         users.RemoveAt(i);
+                        string[] saveInArray = new string[users.Count];
+                        for (int j = 0; j < saveInArray.Length; j++)
+                        {
+                            saveInArray[j] = $"{users[j].Id} {users[j].Name} {users[j].Login} {users[j].Password}";
+                        }
                         Console.WriteLine(" Пользователь удален!");
+                        File.WriteAllLines("userData.txt", saveInArray);
+                        isIdUser = true;
                         break;
                     }
+                }
+                if (!isIdUser)
+                {
+                    Console.WriteLine($" Нет такого Id {userInputId} для удаления");
                 }
                 if (users.Count == 0)
                 {
@@ -100,11 +108,15 @@ internal static class Program
             for (int i = 0; i < hash.Length; i++)
             {
                 string[] hashArray = hash[i].Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                int hashId = Convert.ToInt32(hashArray[0]);
-                string hashName = hashArray[1];
-                string hashLogin = hashArray[2];
-                string hashPassword = hashArray[3];
-                User newUser = new User(hashName, hashLogin, hashPassword, hashId);
+                if (hashArray == null || hashArray.Length == 0)
+                {
+                    continue;
+                }
+                else
+                {
+                    int hashId = Convert.ToInt32(hashArray[0]);
+                    User newUser = new User(hashArray[1], hashArray[2], hashArray[3], hashId);
+                }
             }
         }
     }
@@ -174,36 +186,8 @@ class User : IUser
 
 
 
-    public User(string Name, string Login, string Password, int Id)
-    {
-        for (int i = 0; i < Program.users.Count; i++)
-        {
-            if (Program.users[i].Login == Login)
-            {
-                Console.WriteLine($" Пользователь с логином {Login} уже существует в системе");
-                return;
-            }
-        }
-        this.Name = UserFileAndProgram.isDataExists(Name);
-        this.Login = UserFileAndProgram.isDataExists(Login);
-        this.Password = UserFileAndProgram.isDataExists(Password);
-        this.Id = Id;
-        int count = Program.users.Count;
-        //this.Id = count++;
-        string saveString = $"{this.Id} {this.Name} {this.Login} {this.Password}";
-        UserFileAndProgram.SaveData(saveString);
-        Program.users.Add(this);
-    }
     public User(string Name, string Login, string Password)
     {
-        for (int i = 0; i < Program.users.Count; i++)
-        {
-            if (Program.users[i].Login == Login)
-            {
-                Console.WriteLine($" Пользователь с логином {Login} уже существует в системе");
-                return;
-            }
-        }
         this.Name = UserFileAndProgram.isDataExists(Name);
         this.Login = UserFileAndProgram.isDataExists(Login);
         this.Password = UserFileAndProgram.isDataExists(Password);
@@ -211,6 +195,15 @@ class User : IUser
         this.Id = count++;
         string saveString = $"{this.Id} {this.Name} {this.Login} {this.Password}";
         UserFileAndProgram.SaveData(saveString);
+        Program.users.Add(this);
+    }
+    public User(string Name, string Login, string Password, int Id)
+    {
+        this.Name = UserFileAndProgram.isDataExists(Name);
+        this.Login = UserFileAndProgram.isDataExists(Login);
+        this.Password = UserFileAndProgram.isDataExists(Password);
+        this.Id = Id;
+        string saveString = $"{this.Id} {this.Name} {this.Login} {this.Password}";
         Program.users.Add(this);
     }
 }
