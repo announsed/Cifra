@@ -2,13 +2,14 @@
 for (int i = 0; i < 1000; i++)
 {
     МойНовенькийФайл.FileCreate(i);
-    Thread.Sleep(123);
+    Thread.Sleep(10);
 }
 
 namespace newFileProgram
 {
     public class newFile
     {
+        Mutex mutexObj = new();
         private string _fileName;
         private string _fileText;
         public newFile(string FileName, string FileText)
@@ -20,8 +21,10 @@ namespace newFileProgram
         {
             try
             {
+                mutexObj.WaitOne();
                 File.AppendAllText(this._fileName, this._fileText + $" - {i}");
                 Console.WriteLine(" Завершили создание файла!");
+                mutexObj.ReleaseMutex();
             }
             catch (Exception ex)
             {
