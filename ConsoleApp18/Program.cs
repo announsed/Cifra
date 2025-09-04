@@ -1,4 +1,4 @@
-﻿newFileProgram.newFile МойНовенькийФайл = new newFileProgram.newFile("ТУТ ДОЛЖНА БЫТЬ ОШИБКА", "Это текст файла, он будет создан в запуске 1");
+﻿newFileProgram.newFile МойНовенькийФайл = new newFileProgram.newFile("ТУТ ДОЛЖНА БЫТЬ ОШИБКА", "\n Это текст файла, он будет создан в запуске 1");
 for (int i = 0; i < 1000; i++)
 {
     МойНовенькийФайл.FileCreate(i);
@@ -9,7 +9,6 @@ namespace newFileProgram
 {
     public class newFile
     {
-        Mutex mutexObj = new();
         private string _fileName;
         private string _fileText;
         public newFile(string FileName, string FileText)
@@ -19,20 +18,23 @@ namespace newFileProgram
         }
         public void FileCreate(int i)
         {
-            try
+            using (Mutex fileMutex = new Mutex(false, "Global\\MyApp_FileAccessMutex"))
             {
-                mutexObj.WaitOne();
-                File.AppendAllText(this._fileName, this._fileText + $" - {i}");
-                Console.WriteLine(" Завершили создание файла!");
-                mutexObj.ReleaseMutex();
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine(ex.Message);
-            }
-            finally
-            {
-                Console.WriteLine(" +==+");
+                try
+                {
+                    fileMutex.WaitOne();
+                    File.AppendAllText(this._fileName, this._fileText + $" - {i}");
+                    Console.WriteLine(" Завершили создание файла!");
+                    fileMutex.ReleaseMutex();
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine(ex.Message);
+                }
+                finally
+                {
+                    Console.WriteLine(" +==+");
+                }
             }
         }
     }
