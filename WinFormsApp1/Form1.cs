@@ -30,16 +30,16 @@ namespace WinFormsApp1
                     textBox3.Clear();
                     textBox4.Clear();
                     textBox5.Clear();
-                    MessageBox.Show($" Пользователь добавлен");
+                    MessageBox.Show($" РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅ");
                 }
                 else 
                 {
-                    MessageBox.Show($" Адрес {textBox3.Text} некорректен");
+                    MessageBox.Show($" Р”Р°РЅРЅС‹Р№ {textBox3.Text} РЅРµ РїРѕРґС…РѕРґРёС‚");
                 }
             }
             else
             {
-                MessageBox.Show(" Некорректный ввод данных");
+                MessageBox.Show(" РћС€РёР±РєР° РІР°Р»РёРґР°С†РёРё РґР°РЅРЅС‹С…");
             }
         }
 
@@ -100,8 +100,8 @@ namespace WinFormsApp1
 
         private void button2_Click(object sender, EventArgs e)
         {
-            string FileNameToSerialaz = Interaction.InputBox(" Введите имя файла");
-            string path = Interaction.InputBox(" Введите путь сохранения файла (можно ничего не вводить, тогда он останется по умолчании в корнейвой папке)");
+            string FileNameToSerialaz = Interaction.InputBox(" Р’РІРµРґРёС‚Рµ РёРјСЏ С„Р°Р№Р»Р°");
+            string path = Interaction.InputBox(" РЈРєР°Р¶РёС‚Рµ РїСѓС‚СЊ, РіРґРµ Р±СѓРґРµС‚ СЃРѕС…СЂР°РЅРµРЅ С„Р°Р№Р» (РµСЃР»Рё РЅРµ СѓРєР°Р·С‹РІР°С‚СЊ, С‚Рѕ С„Р°Р№Р» Р±СѓРґРµС‚ СЃРѕС…СЂР°РЅРµРЅ РІ РґРёСЂРµРєС‚РѕСЂРёРё РїСЂРѕРµРєС‚Р°)");
             if (FileNameToSerialaz != null || FileNameToSerialaz != "")
             {
                 string stringJson = UserRegistration.SerializeUserToJson(StaticListUsers.users);
@@ -113,11 +113,11 @@ namespace WinFormsApp1
                 {
                     File.AppendAllText(@path + @"\" + FileNameToSerialaz + ".json", stringJson);
                 }
-                MessageBox.Show(" Сериализация выполнена");
+                MessageBox.Show(" РЎРµСЂРёР°Р»РёР·Р°С†РёСЏ РІС‹РїРѕР»РЅРµРЅР°");
             }
             else
             {
-                MessageBox.Show(" Имя файла введено некорректно");
+                MessageBox.Show(" РћС€РёР±РєР° РёРјРµРЅРё С„Р°Р№Р»Р°");
             }
         }
     }

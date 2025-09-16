@@ -48,7 +48,7 @@ namespace WinFormsApp1
                 else 
                 {
                     privateInfoContinue = false;
-                    MessageBox.Show($" Пользователь c именем {newUser.UserName} уже существует");
+                    MessageBox.Show($" РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃ РёРјРµРЅРµРј {newUser.UserName} СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
                 }
                 if (StaticListUsers.users[i].Email != newUser.Email) 
                 {
@@ -57,7 +57,7 @@ namespace WinFormsApp1
                 else
                 {
                     privateInfoContinue = false;
-                    MessageBox.Show($" Пользователь c mail {newUser.Email} уже существует");
+                    MessageBox.Show($" РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ c mail {newUser.Email} СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚");
                 }
                 if (privateInfoContinue == true) 
                 {
@@ -70,7 +70,7 @@ namespace WinFormsApp1
             var options = new JsonSerializerOptions
             {
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-                WriteIndented = true, // Для читаемости, необязательно
+                WriteIndented = true, // РґР»СЏ РїРѕРІС‹С€РµРЅРёСЏ С‡РёС‚Р°РµРјРѕСЃС‚Рё
                 IncludeFields = true
             };
             string fileJsonSerialaze = JsonSerializer.Serialize(users, options);
