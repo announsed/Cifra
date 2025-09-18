@@ -58,6 +58,7 @@
             dataGridView1.Name = "dataGridView1";
             dataGridView1.Size = new Size(458, 428);
             dataGridView1.TabIndex = 0;
+            dataGridView1.CellContentClick += dataGridView1_CellContentClick;
             dataGridView1.KeyDown += dataGridView1_KeyDown;
             // 
             // UserName
@@ -206,7 +207,7 @@
             Controls.Add(groupBox2);
             Controls.Add(groupBox1);
             Name = "Form1";
-            Text = "Form1";
+            Text = "Первая Форма";
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
