@@ -164,6 +164,8 @@ namespace WinFormsApp1
             newBook.SaveAs(new FileInfo(fullPathFileSave));
         }
     }
+
+    // CSV 
     public static class StaticPackegeCSVFile
     {
         public static string PathInBook(string path)
@@ -179,6 +181,36 @@ namespace WinFormsApp1
         {
             return new CsvWriter(new StreamWriter(path), new
  CsvConfiguration (CultureInfo.InvariantCulture));
+        }
+
+        public static CsvReader StreamReaderAndCSVReader(string path) 
+        {
+            return new CsvReader(new StreamReader(path), new CsvConfiguration (CultureInfo.InvariantCulture));
+        }
+    }
+
+    public static class UploadCSV 
+    {
+        public static OpenFileDialog OpenFileCSV() 
+        {
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Выберите файл для загрузки";
+            string directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            openFileDialog.InitialDirectory = directoryPath;
+            openFileDialog.Filter = "Файл(.csv)";
+            openFileDialog.RestoreDirectory = true;
+            return openFileDialog;
+        }
+
+        public static string ShowDialog(OpenFileDialog openFileDialog) 
+        {
+            if (openFileDialog.ShowDialog() == DialogResult.OK) 
+            {
+                string userFilePath = openFileDialog.FileName;
+                return userFilePath;
+            }
+            return null;
         }
     }
 }

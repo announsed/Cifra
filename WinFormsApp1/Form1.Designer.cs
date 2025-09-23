@@ -57,6 +57,7 @@
             Password = new DataGridViewTextBoxColumn();
             RegistrationDate = new DataGridViewTextBoxColumn();
             BirthDate = new DataGridViewTextBoxColumn();
+            UnIploadInCSV = new Button();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
@@ -211,6 +212,7 @@
             // groupBox1
             // 
             groupBox1.BackColor = Color.Moccasin;
+            groupBox1.Controls.Add(UnIploadInCSV);
             groupBox1.Controls.Add(button5);
             groupBox1.Controls.Add(button4);
             groupBox1.Controls.Add(button3);
@@ -359,6 +361,18 @@
             BirthDate.ReadOnly = true;
             BirthDate.Width = 200;
             // 
+            // UnIploadInCSV
+            // 
+            UnIploadInCSV.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            UnIploadInCSV.ForeColor = Color.Violet;
+            UnIploadInCSV.Location = new Point(2523, 787);
+            UnIploadInCSV.Name = "UnIploadInCSV";
+            UnIploadInCSV.Size = new Size(248, 177);
+            UnIploadInCSV.TabIndex = 18;
+            UnIploadInCSV.Text = "Загрузить из CSV";
+            UnIploadInCSV.UseVisualStyleBackColor = true;
+            UnIploadInCSV.Click += UnIploadInCSV_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
@@ -405,5 +419,6 @@
         private DataGridViewTextBoxColumn BirthDate;
         private Button button4;
         private Button button5;
+        private Button UnIploadInCSV;
     }
 }

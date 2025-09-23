@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.VisualBasic;
 using OfficeOpenXml;
 
@@ -282,6 +283,22 @@ namespace WinFormsApp1
         private void button5_Click(object sender, EventArgs e)
         {
             UploadToTheTableCSV();
+        }
+
+        private void UnUploadCSV() 
+        {
+            var openfile = UploadCSV.OpenFileCSV();
+            string usserPath = UploadCSV.ShowDialog(openfile);
+            if (usserPath != null) 
+            {
+                StaticListUsers.users.AddRange((StaticPackegeCSVFile.StreamReaderAndCSVReader(usserPath)).GetRecords(User).ToList());
+                MessageBox.Show(" Данные загружены");
+            }
+        }
+        // Загрузка из CSV файла
+        private void UnIploadInCSV_Click(object sender, EventArgs e)
+        {
+            UnUploadCSV();
         }
     }
 }
