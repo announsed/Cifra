@@ -1,217 +1,220 @@
-﻿
-internal static class Program
+using System.Globalization;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using CsvHelper;
+using CsvHelper.Configuration;
+using OfficeOpenXml;
+
+namespace WinFormsApp1
 {
-    public static List<User> users = new List<User>();
-    private static void Main(string[] args)
+    internal static class Program
     {
-        bool isStart = true;
-        ConvertArrayInListAndAdd();
-        while (isStart)
+        /// <summary>
+        ///  The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main()
         {
-            UserFileAndProgram.Menu();
-            Console.Write(" \n Ввод: ");
-            isStart = Action(isStart);
+            ExcelPackage.License.SetNonCommercialPersonal(" PersonalNotLicenseCommerrcial");
+            // To customize application configuration such as set high DPI settings or default font,
+            // see https://aka.ms/applicationconfiguration.
+            ApplicationConfiguration.Initialize();
+            Application.Run(new Form1());
         }
     }
 
-
-
-
-
-
-
-
-
-
-    static bool Action(bool isStart)
+    // Реализация класса User по заданию
+    public class User
     {
-        switch (Console.ReadLine())
+        public int Id { get; set; }
+        public string UserName { get; set; }
+        public string FirstName { get; set; }
+        public string SecondName { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public DateTime RegistrationDate { get; set; }
+        public DateTime BirthDate { get; set; }
+    }
+
+
+    // Реализация статического класса для регистрации юзеров
+    public static class UserRegistration
+    {
+        // Метод для регистрации пользвателей с проверками уникальности по нику и емайл
+        public static void RegisterUser(User newUser)
         {
-            case "1" or "1)":
-                Console.Write(" Введите имя: ");
-                string userInputName = Console.ReadLine();
-                Console.Write(" Введите логин: ");
-                string userInputLogin = Console.ReadLine();
-                Console.Write(" Введите пароль: ");
-                string userInputPassword = Console.ReadLine();
-                bool hasLogin = false;
-                for (int j = 0; j < Program.users.Count; j++)
+            if (StaticListUsers.users.Count == 0)
+            {
+                StaticListUsers.users.Add(newUser);
+                MessageBox.Show($" Пользователь зарегистрирован");
+            }
+            else
+            {
+                bool privateInfoContinue = false;
+                for (int i = 0; i < StaticListUsers.users.Count; i++)
                 {
-                    if (Program.users[j].Login == userInputLogin)
+                    if (StaticListUsers.users[i].UserName == newUser.UserName)
                     {
-                        Console.WriteLine($" Пользователь с логином {userInputLogin} уже существует в системе");
-                        hasLogin = true;
+                        privateInfoContinue = true;
+                        MessageBox.Show($" Пользователь с именем {newUser.UserName} уже существует");
+                    }
+                    else if (StaticListUsers.users[i].Email == newUser.Email)
+                    {
+                        privateInfoContinue = true;
+                        MessageBox.Show($" Пользователь c mail {newUser.Email} уже существует");
                     }
                 }
-                if (!hasLogin)
+                if (privateInfoContinue != true)
                 {
-                    User newUser = new User(userInputName, userInputLogin, userInputPassword);
-                    users.Add(newUser);
+                    StaticListUsers.users.Add(newUser);
+                    MessageBox.Show($" Пользователь зарегистрирован");
                 }
-
-                break;
-
-            case "2" or "2)":
-                if (users.Count == 0)
-                {
-                    Console.WriteLine("\n Список пуст! \n");
-                }
-                for (int i = 0; i < users.Count; i++)
-                {
-                    Console.WriteLine($" {users[i].Id} {users[i].Name} {users[i].Login} {users[i].Password}");
-                }
-
-                break;
-
-            case "3" or "3)":
-                Console.Write("\n Введи Id пользователя для удаления: ");
-                int userInputId = Convert.ToInt32(Console.ReadLine());
-                for (int i = 0; i < users.Count; i++)
-                {
-                    if (users[i].Id == userInputId)
-                    {
-                        users.RemoveAt(i);
-                        Console.WriteLine(" Пользователь удален!");
-                        break;
-                    }
-                }
-                if (users.Count == 0)
-                {
-                    Console.WriteLine("\n Нет пользователей для удаления!");
-                }
-                break;
-
-            case "4" or "4)":
-                isStart = false;
-                break;
-
-            default:
-                Console.WriteLine("\n Не понял что это ты ввел!");
-                break;
-        }
-        return isStart;
-    }
-
-    static void ConvertArrayInListAndAdd()
-    {
-        string[] hash = UserFileAndProgram.GetData();
-        if (hash.Length != 0)
-        {
-            for (int i = 0; i < hash.Length; i++)
-            {
-                string[] hashArray = hash[i].Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                int hashId = Convert.ToInt32(hashArray[0]);
-                string hashName = hashArray[1];
-                string hashLogin = hashArray[2];
-                string hashPassword = hashArray[3];
-                User newUser = new User(hashName, hashLogin, hashPassword, hashId);
             }
         }
-    }
-}
 
-internal static class UserFileAndProgram
-{
-
-    internal static void SaveData(string saveString)
-    {
-        string[] arr = GetData();
-        if (arr.Length == 0)
+        // Для сериализации юзеров из листа по заданию, с опциями для правильного отображения
+        public static string SerializeUserToJson(List<User> users)
         {
-            File.AppendAllText("userData.txt", saveString);
-        }
-        else
-        {
-            File.AppendAllText("userData.txt", "\n" + saveString);
-        }
-    }
-    internal static string[] GetData()
-    {
-        if (!File.Exists("userData.txt"))
-        {
-            return Array.Empty<string>();
-        }
-        return File.ReadAllLines("userData.txt");
-    }
-
-    internal static IsDataExists isDataExists = (string stringData) =>
-    {
-        return stringData ?? throw new Exception("Нет данных");
-    };
-
-    internal static void Menu()
-    {
-        string[] menu = new string[]
-        {  " 1) Добавить пользователя",
-           " 2) Посмотреть список пользователей",
-           " 3) Удалить пользователя",
-           " 4) Выход из программы"
-        };
-
-        foreach (var item in menu)
-        {
-            Console.WriteLine(item);
-        }
-    }
-}
-
-public delegate string IsDataExists(string stringData);
-
-public interface IUser
-{
-    internal int Id { get; set; }
-    internal string Name { get; set; }
-    internal string Login { get; set; }
-    internal string Password { get; set; }
-}
-
-class User : IUser
-{
-    public int Id { get; set; }
-    public string Login { get; set; }
-    public string Name { get; set; }
-    public string Password { get; set; }
-
-
-
-    public User(string Name, string Login, string Password, int Id)
-    {
-        for (int i = 0; i < Program.users.Count; i++)
-        {
-            if (Program.users[i].Login == Login)
+            var options = new JsonSerializerOptions
             {
-                Console.WriteLine($" Пользователь с логином {Login} уже существует в системе");
-                return;
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                WriteIndented = true, // для повышения читаемости
+                IncludeFields = true
+            };
+            string fileJsonSerialaze = JsonSerializer.Serialize(users, options);
+            return fileJsonSerialaze;
+        }
+    }
+
+
+    // Статический класс с реализаций листа с юзерами для хранения зарегестрированных пользователей
+    public static class StaticListUsers
+    {
+        public static List<User> users = new List<User>();
+    }
+
+    // Класс для проверки на пробелы и null
+    public static class IsNullAndAllSpaces
+    {
+        public static bool IsNullOrEmptyOrAllSpaces(string str)
+        {
+            if (str == null || str.Length == 0)
+            {
+                return true;
+            }
+
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (!Char.IsWhiteSpace(str[i]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    }
+
+    // (EPPLus)  Создание книги, путь и имя для сохранения файла
+    public static class StaticExcelPackegeBook
+    {
+        public static ExcelPackage newBook = new ExcelPackage();
+        public static string PathInBook(string path)
+        {
+            return path;
+        }
+        public static string NameFailToSave(string pathInBook, string nameFile)
+        {
+            return pathInBook + @"\" + nameFile + ".xlsx";
+        }
+        public static void UserInputNameToListInBook(string nameList, out ExcelWorksheet excelWorksheet)
+        {
+            excelWorksheet = null;
+            if (newBook.Workbook.Worksheets[nameList] == null)
+            {
+                newBook.Workbook.Worksheets.Add(nameList);
+                excelWorksheet = newBook.Workbook.Worksheets[nameList];
+            }
+            else
+            {
+                MessageBox.Show($" Файл с именем: {nameList} не может быть создан");
             }
         }
-        this.Name = UserFileAndProgram.isDataExists(Name);
-        this.Login = UserFileAndProgram.isDataExists(Login);
-        this.Password = UserFileAndProgram.isDataExists(Password);
-        this.Id = Id;
-        int count = Program.users.Count;
-        //this.Id = count++;
-        string saveString = $"{this.Id} {this.Name} {this.Login} {this.Password}";
-        UserFileAndProgram.SaveData(saveString);
-        Program.users.Add(this);
-    }
-    public User(string Name, string Login, string Password)
-    {
-        for (int i = 0; i < Program.users.Count; i++)
+        public static void ConvertListToExcelAndFinalFileSave(ExcelWorksheet excelWorksheet, string fullPathFileSave)
         {
-            if (Program.users[i].Login == Login)
+            for (int i = 0; i < StaticListUsers.users.Count; i++)
             {
-                Console.WriteLine($" Пользователь с логином {Login} уже существует в системе");
-                return;
+                string[] hashUser =
+                [
+                    StaticListUsers.users[i].Id.ToString(),
+                    StaticListUsers.users[i].UserName,
+                    StaticListUsers.users[i].FirstName,
+                    StaticListUsers.users[i].SecondName,
+                    StaticListUsers.users[i].Email,
+                    StaticListUsers.users[i].Password,
+                    StaticListUsers.users[i].RegistrationDate.ToString(),
+                    StaticListUsers.users[i].BirthDate.ToString(),
+                ];
+                for (int j = 0; j < hashUser.Length; j++)
+                {
+                    excelWorksheet.Cells[i + 1, j + 1].AutoFitColumns();
+                    excelWorksheet.Cells[i + 1, j + 1].Value = hashUser[j];
+                }
             }
+            newBook.SaveAs(new FileInfo(fullPathFileSave));
         }
-        this.Name = UserFileAndProgram.isDataExists(Name);
-        this.Login = UserFileAndProgram.isDataExists(Login);
-        this.Password = UserFileAndProgram.isDataExists(Password);
-        int count = Program.users.Count;
-        this.Id = count++;
-        string saveString = $"{this.Id} {this.Name} {this.Login} {this.Password}";
-        UserFileAndProgram.SaveData(saveString);
-        Program.users.Add(this);
+    }
+
+    // CSV 
+    public static class StaticPackegeCSVFile
+    {
+        public static string PathInBook(string path)
+        {
+            return path;
+        }
+        public static string NameFailToSave(string pathInBook, string nameFile)
+        {
+            return pathInBook + @"\" + nameFile + ".csv";
+        }
+
+        public static CsvWriter StreamWriterAndCSVWriter(string path)
+        {
+            return new CsvWriter(new StreamWriter(path), new
+ CsvConfiguration (CultureInfo.InvariantCulture));
+        }
+
+        public static CsvReader StreamReaderAndCSVReader(string path) 
+        {
+            return new CsvReader(new StreamReader(path), new CsvConfiguration (CultureInfo.InvariantCulture));
+        }
+    }
+
+    public static class UploadCSV 
+    {
+        public static OpenFileDialog OpenFileCSV() 
+        {
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Выберите файл для загрузки";
+            string directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            openFileDialog.InitialDirectory = directoryPath;
+<<<<<<< HEAD
+            openFileDialog.Filter = "Файл CSV(.csv)|*.csv";
+=======
+            openFileDialog.Filter = "Файл(.csv)";
+>>>>>>> 9bd631a69a24595c19541da667ffed458bd3b011
+            openFileDialog.RestoreDirectory = true;
+            return openFileDialog;
+        }
+
+        public static string ShowDialog(OpenFileDialog openFileDialog) 
+        {
+            if (openFileDialog.ShowDialog() == DialogResult.OK) 
+            {
+                string userFilePath = openFileDialog.FileName;
+                return userFilePath;
+            }
+            return null;
+        }
     }
 }
-
