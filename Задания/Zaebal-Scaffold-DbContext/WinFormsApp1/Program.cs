@@ -1,7 +1,4 @@
-using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.VisualBasic.ApplicationServices;
 
 namespace WinFormsApp1
 {
@@ -20,22 +17,42 @@ namespace WinFormsApp1
         }
     }
 
-    public partial class DB : DbContext 
+    public partial class DBLocal : DbContext
     {
-        public DB()
+        private string _path;
+        public DBLocal(string path) 
         {
-            Database.EnsureCreated();
+            _path = @path;
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlite($"Data Source ={_path}");
+        }
+    }
+
+    public partial class DB : DbContext
+    {
+        private string _server;
+        private string _database;
+        private string _UserId;
+        private string _password;
+
+
+        public DB(string server, string database, string userId, string password)
+        {
+            _server = server;
+            _database = database;
+            _UserId = userId;
+            _password = password;
         }
         public DB(DbContextOptions<DB> options)
         : base(options)
         {
         }
 
-        public DbSet<User> Users { get; set; }
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=localhost;Database=UsersDB;User Id=sa;Password=23LAMbda0933!;TrustServerCertificate=True;");
+            optionsBuilder.UseSqlServer($"Server={_server};Database={_database};User Id={_UserId};Password={_password};TrustServerCertificate=True;");
         }
     }
 }
