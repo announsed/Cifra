@@ -1,5 +1,8 @@
-﻿using ConsoleApp_Тема_34._Урок_2._Домашнее_задание_;
+﻿using System;
+using ConsoleApp_Тема_34._Урок_2._Домашнее_задание_;
 using ConsoleApp_Тема_34._Урок_2._Домашнее_задание_.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 var новыйОбьектВКатегорииОдинИнструменты = new Categories("Инструменты", "Различные строительные инструменты");
 var новыйОбьектВКатегорииДваЕда = new Categories("Еда", "Различные вариации вкусной и не очень еды");
@@ -68,4 +71,37 @@ using (DataBaseUsers DbUsers = new DataBaseUsers())
     DbUsers.Add(UserOne);
     DbUsers.Add(UserTwo);
     DbUsers.SaveChanges();
+}
+
+
+// Тема 34. Урок 3. Домашнее задание. Конфигурирование строки подключения.
+
+// В файле myConfigurationFileFromDateBase.json добавить строку подключения (локально через Data Source=) или (к сереверу используя MS SQL Server  "Server=;Database=;User Id=;Password=;TrustServerCertificate=True;")
+
+
+// Установлен пакет установите пакет Microso.Extensions.Configuraешon.Json, он предоставляет базовые классы для дальнейшей работы.
+
+// Как пример буду использовать users для DbContext
+
+var builder = new ConfigurationBuilder();
+// установка пути к текущему каталогу 
+builder.SetBasePath(Directory.GetCurrentDirectory());
+
+// получаем конфигурацию из файла myConfigurationFileFromDataBase.json 
+builder.AddJsonFile("myConfigurationFileFromDataBase.json");
+
+// создаем конфигурацию 
+var config = builder.Build();
+
+// получаем строку подключения 
+var connectionString = config.GetConnectionString("DefaultConnection");
+
+var optionsBuilder = new DbContextOptionsBuilder<DataBaseUsers>();
+var options = optionsBuilder.UseSqlite(connectionString).Options;
+
+using (DataBaseUsers db = new DataBaseUsers(options))
+{
+    db.Add(UserOne);
+    db.Add(UserTwo);
+    db.SaveChanges();
 }

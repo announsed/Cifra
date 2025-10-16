@@ -77,7 +77,7 @@ namespace ConsoleApp_Тема_34._Урок_2._Домашнее_задание_
             Database.EnsureCreated();
         }
 
-        internal DataBaseUsers(DbContextOptions<DataBaseProducts> options) : base(options)
+        internal DataBaseUsers(DbContextOptions<DataBaseUsers> options) : base(options)
         {
 
         }

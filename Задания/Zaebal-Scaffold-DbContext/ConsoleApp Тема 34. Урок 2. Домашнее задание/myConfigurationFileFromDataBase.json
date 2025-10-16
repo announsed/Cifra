@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "тут чисто строка подключения по дефолту, допустим подключение будет к MS Sql Server, тогда Server={_server};Database={_database};User Id={_UserId};Password={_password};TrustServerCertificate=True;"
+  }
+}
