@@ -69,13 +69,55 @@ using (var dbContext = new AppDbContext())
 
     // Добавление заказов в списки заказов пользователей
 
+    var products = new List<Product>();
+    products.AddRange(electronics);
+    products.AddRange(food);
+    products.AddRange(clothing);
+    products.AddRange(tools);
     dbContext.Users.AddRange(users);
+    dbContext.Products.AddRange(products);
+    dbContext.Orders.AddRange(orders);
+    var categories = new List<Category>();
+    categories.AddRange(electronicsCategory);
+    categories.AddRange(foodCategory);
+    categories.AddRange(clothingCategory);
+    categories.AddRange(toolsCategory);
+    dbContext.Categories.AddRange(categories);
     dbContext.SaveChanges();
-
 
     // Вывести всех пользователей которые заказали смартфон и получили его
 
-    var result = orders.Where(x => x.Status == "Отправлен").Where(x => x.Products.Where(y => y.Name == "Телефон"));
+    var result = orders.Where(x => x.Status == "Отправлен").Where(x => x.Products.Any(y => y.Name == "Смартфон"));
+
+    foreach (var item in result) 
+    {
+        Console.WriteLine(item.OrderId + " " + item.OrderDate + " " + item.User.UserName + " " + item.Status + " " + item.Products[0].Name);
+    }
+
+
+    // Вывести все имена и id тех, кто заказал смартфон
+    var resultNameAndId = result.Where(x => x.User.UserName != null);
+    foreach (var item in resultNameAndId) 
+    {
+        Console.WriteLine(item.OrderId + " " + item.User.UserId + " " + item.User.UserName);
+    }
+
+
+    // join две таблицы
+    var receptJoin = result.Join(dbContext.Users,
+        o => o.User.UserId,
+        u => u.UserId,
+        (o, u) => new
+        {
+            Name = u.UserName,
+            u.UserId,
+            o.OrderId
+        });
+
+    foreach (var item in receptJoin) 
+    {
+        Console.WriteLine(item.OrderId + " " + item.UserId + " " + item.Name);
+    }
 }
 
 

@@ -22,7 +22,7 @@ namespace ConsoleApp1
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("C:\\Users\\Student\\source\\repos\\Sergey\\Cifra\\PosledneeRehenie\\ConsoleApp1\\DataBaseGenerated.db");
+            optionsBuilder.UseSqlite("Data Source=C:\\Users\\Student\\source\\repos\\Sergey\\Cifra\\PosledneeRehenie\\ConsoleApp1\\DataBaseGenerated.db");
         }
     }
 }
